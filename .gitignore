@@ -1,0 +1,11 @@
+# Build directory
+.next
+
+# OS X
+.DS_Store
+
+# IntelliJ
+.idea
+
+# Node.js
+node_modules
