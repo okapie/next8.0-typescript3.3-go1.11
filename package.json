@@ -1,5 +1,5 @@
 {
-  "name": "create-next-example-app",
+  "name": "next7.0-typescript3.2-go1.11",
   "scripts": {
     "dev": "next",
     "build": "next build",
