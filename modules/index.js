@@ -1,19 +1,20 @@
-import { all } from "redux-saga/effects" // TODO: Import fork.
 import { combineReducers } from "redux"
+import { fork, all } from "redux-saga/effects"
+import modules from "./users"
 
 /**
  * Root Reducer.
  */
 export default {
   action: {
-    // TODO: Add actions.
+    ...modules.actions,
   },
   reducer: combineReducers({
-    // TODO: Add reducers.
+    users: modules.reducers
   }),
   saga: function* saga() {
     yield all([
-      // TODO: Need to fork effects.
+      fork(modules.sagas)
     ])
   }
 }
