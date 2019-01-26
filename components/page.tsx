@@ -1,29 +1,22 @@
-import Link from 'next/link'
-import { connect } from 'react-redux'
+import Link from "next/link"
+import { connect } from "react-redux"
 
-function Page ({
-  error,
-  lastUpdate,
-  light,
-  linkTo,
-  NavigateTo,
-  placeholderData,
-  title
-}) {
+interface PageProps {
+  linkTo: string;
+  NavigateTo: string;
+  title: string;
+  error?: string;
+}
+
+function Page (props: PageProps) {
   return (
     <div>
-      <h1>{title}</h1>
+      <h1>{props.title}</h1>
       <nav>
-        <Link href={linkTo}>
-          <a>Navigate: {NavigateTo}</a>
+        <Link href={props.linkTo}>
+          <a>Navigate: {props.NavigateTo}</a>
         </Link>
       </nav>
-      {placeholderData && (
-        <pre>
-          <code>{JSON.stringify(placeholderData, null, 2)}</code>
-        </pre>
-      )}
-      {error && <p style={{ color: 'red' }}>Error: {error.message}</p>}
     </div>
   )
 }

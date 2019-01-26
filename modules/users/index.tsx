@@ -1,4 +1,4 @@
-import { createAction, handleActions } from 'redux-actions'
+import { createAction, handleActions } from "redux-actions"
 import { all, put, takeLatest } from "redux-saga/effects"
 
 const defaultState = {
@@ -12,9 +12,9 @@ const defaultState = {
 /**
  * Action Creator.
  */
-const FAILURE = "FAILURE";
-const LOAD_DATA = "LOAD_DATA";
-const LOAD_DATA_SUCCESS = "LOAD_DATA_SUCCESS";
+const FAILURE = "FAILURE"
+const LOAD_DATA = "LOAD_DATA"
+const LOAD_DATA_SUCCESS = "LOAD_DATA_SUCCESS"
 const actions = {
   failure: createAction(FAILURE),
   loadData: createAction(LOAD_DATA),
@@ -29,8 +29,8 @@ const reducers = handleActions(
    * reducerMap.
    */
   {
-    [FAILURE]: (state, { payload }) => ({ list: payload }),
-    [LOAD_DATA_SUCCESS]: (state, { payload }) => ({ deleteResult: payload })
+    [FAILURE]: (state: Object, { payload }) => ({ ...state, list: payload }),
+    [LOAD_DATA_SUCCESS]: (state: Object, { payload }) => ({ ...state, deleteResult: payload })
   },
   /**
    * defaultState.
@@ -49,7 +49,7 @@ const sagas = function* () {
 
 function* loadData() {
   try {
-    const res = yield fetch('https://jsonplaceholder.typicode.com/users')
+    const res = yield fetch("https://jsonplaceholder.typicode.com/users")
     const data = yield res.json()
     yield put(actions.loadDataSuccess(data))
   } catch (err) {
