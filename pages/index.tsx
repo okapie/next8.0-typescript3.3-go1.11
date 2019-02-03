@@ -1,9 +1,9 @@
 import React from "react"
 import { connect } from "react-redux"
 import modules from "../modules"
-import Page from "../components/page"
 import { Dispatch, Store } from "redux"
 import { Task } from "redux-saga"
+import ButtonComponent from "../components/common/atoms/Button";
 
 interface ContextType {
   ctx: {
@@ -30,8 +30,30 @@ class Index extends React.Component {
   }
 
   render () {
-    return <Page title="Index Page" linkTo="/other" NavigateTo="Other Page" />
+    return (
+      <div>
+        <ButtonComponent
+          value="Information"
+          onChange={() => {}}
+        />
+        <input
+          value={"Dummy"}
+          onChange={() => {}}
+        />
+        <ButtonComponent
+          value="Add"
+          onChange={() => {}}
+        />
+        <ButtonComponent
+          value="Show List"
+          onChange={() => {}}
+        />
+        <ul>
+          <li>Dummy Todo</li>
+        </ul>
+      </div>
+    )
   }
 }
 
-export default connect()(Index)
+export default connect(state => state)(Index)
