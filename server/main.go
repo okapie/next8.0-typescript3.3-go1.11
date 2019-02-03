@@ -22,7 +22,7 @@ type Todos []Todo
 func openDB() (db *sql.DB) {
     dbDriver := "mysql"
     dbUser := "root"
-    dbPassword := "root"
+    dbPassword := "password"
     dbName := "db_todos"
     db, err := sql.Open(dbDriver, dbUser+":"+dbPassword+"@/"+dbName)
     if err != nil {
