@@ -22,5 +22,9 @@
     "redux": "4.0.1",
     "redux-actions": "2.6.4",
     "redux-saga": "0.16.2"
+  },
+  "devDependencies": {
+    "@types/axios": "0.14.0",
+    "axios": "0.18.0"
   }
 }
