@@ -23,7 +23,7 @@ class Index extends React.Component {
     const { store, isServer } = props.ctx
 
     if (!store.getState().placeholderData) {
-      store.dispatch(modules.action.loadData())
+      store.dispatch(modules.action.getTodosList())
     }
 
     return { isServer }

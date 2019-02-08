@@ -1,6 +1,6 @@
 import { Dispatch } from "redux"
 import { createAction, handleActions } from "redux-actions"
-import { all, takeLatest } from "redux-saga/effects"
+import { all, takeLatest, put } from "redux-saga/effects"
 import TodosService from "../../services/todos";
 
 /**
@@ -59,12 +59,12 @@ const sagas = function* () {
   ])
 }
 
-export const getTodosList = () => {
-  return async (dispatch: Dispatch) => {
-    const response = await TodosService.getTodoList()
-    if (response.length > 0) {
-      dispatch(actions.getTodosListDone(response))
-    }
+export function* getTodosList() {
+  try {
+    const res = TodosService.getTodoList()
+    yield put(actions.getTodosListDone(res))
+  } catch (err) {
+    // TODO: Error handling.
   }
 }
 

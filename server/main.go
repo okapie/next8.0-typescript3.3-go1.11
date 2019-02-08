@@ -86,7 +86,7 @@ func deleteTodo(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-    allowedOrigins := handlers.AllowedOrigins([]string{"http://localhost:8081"})
+    allowedOrigins := handlers.AllowedOrigins([]string{"http://localhost:3000"})
     allowedMethods := handlers.AllowedMethods([]string{"GET", "POST", "DELETE", "PUT"})
     allowedHeaders := handlers.AllowedHeaders([]string{"Authorization"})
 

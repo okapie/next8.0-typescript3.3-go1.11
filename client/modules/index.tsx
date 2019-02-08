@@ -10,7 +10,7 @@ export default {
     ...modules.actions,
   },
   reducer: combineReducers({
-    ...modules.reducers
+    todos: modules.reducers
   }),
   saga: function* saga() {
     yield all([
