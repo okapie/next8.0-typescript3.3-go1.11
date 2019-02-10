@@ -3,7 +3,8 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "prettier-watch": "onchange './**/*.tsx' -- prettier --config ./.prettierrc --write {{changed}}"
   },
   "dependencies": {
     "@types/next": "7.0.6",
@@ -21,10 +22,17 @@
     "react-redux": "6.0.0",
     "redux": "4.0.1",
     "redux-actions": "2.6.4",
-    "redux-saga": "0.16.2"
+    "redux-saga": "0.16.2",
+    "typescript": "3.3.3"
   },
   "devDependencies": {
     "@types/axios": "0.14.0",
-    "axios": "0.18.0"
+    "axios": "0.18.0",
+    "onchange": "5.2.0",
+    "prettier": "1.16.4",
+    "tslint": "5.12.1",
+    "tslint-config-prettier": "1.18.0",
+    "tslint-plugin-prettier": "2.0.1",
+    "tslint-react": "3.6.0"
   }
 }

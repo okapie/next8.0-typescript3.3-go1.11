@@ -1,6 +1,13 @@
-import { applyMiddleware, createStore, compose, Dispatch, MiddlewareAPI, Store } from "redux"
-import createSagaMiddleware, { SagaMiddleware, Task } from "redux-saga"
-import modules from "../modules"
+import {
+  applyMiddleware,
+  createStore,
+  compose,
+  Dispatch,
+  MiddlewareAPI,
+  Store
+} from "redux";
+import createSagaMiddleware, { SagaMiddleware, Task } from "redux-saga";
+import modules from "../modules";
 
 interface StateType extends Dispatch {
   type: string;
@@ -15,14 +22,18 @@ interface SagaType {
 }
 
 interface ExtendedMiddleware {
-  <S extends StateType>(api: MiddlewareAPI<S>): (next: Dispatch<S>) => Dispatch<S>;
+  <S extends StateType>(api: MiddlewareAPI<S>): (
+    next: Dispatch<S>
+  ) => Dispatch<S>;
   [Symbol.iterator](): IterableIterator<any>;
 }
 
-const bindMiddleware = (middleware: ExtendedMiddleware | SagaMiddleware<{}>[]) => compose(applyMiddleware(...middleware))
+const bindMiddleware = (
+  middleware: ExtendedMiddleware | SagaMiddleware<{}>[]
+) => compose(applyMiddleware(...middleware));
 
 export default () => {
-  const saga: SagaMiddleware<{}> = createSagaMiddleware()
+  const saga: SagaMiddleware<{}> = createSagaMiddleware();
 
   /**
    * Since Next.js does server-side rendering, you are REQUIRED to pass `preloadedState`
@@ -31,7 +42,7 @@ export default () => {
   const store: SagaType & Store<any> = createStore(
     modules.reducer,
     bindMiddleware([saga])
-  )
+  );
 
   /**
    * next-redux-saga depends on `runSagaTask` and `sagaTask` being attached to the store.
@@ -40,12 +51,12 @@ export default () => {
    *   `sagaTask` is used to await the rootSaga task before sending results to the client
    *
    */
-  store.runSagaTask = () => store.sagaTask = saga.run(modules.saga)
+  store.runSagaTask = () => (store.sagaTask = saga.run(modules.saga));
 
   /**
    * Run the rootSaga initially.
    */
-  store.runSagaTask()
+  store.runSagaTask();
 
-  return store
-}
+  return store;
+};
