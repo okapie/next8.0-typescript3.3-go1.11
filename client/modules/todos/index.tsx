@@ -1,13 +1,16 @@
 import { Dispatch } from "redux";
 import { createAction, handleActions } from "redux-actions";
-import { all, takeLatest, put } from "redux-saga/effects";
+import { all, takeLatest, put, call } from "redux-saga/effects";
 import TodosService from "../../services/todos";
 
 /**
  * Default State.
  */
 const defaultState = {
-  list: [],
+  lists: {
+    isFetching: false,
+    data: null
+  },
   postResult: false,
   deleteResult: false
 };
@@ -38,9 +41,17 @@ const reducers = handleActions(
    * reducerMap.
    */
   {
+    [GET_TODOS_LIST]: (state: Object, { payload }) => ({
+      lists: {
+        isFetching: true
+      }
+    }),
     [GET_TODOS_LIST_DONE]: (state: Object, { payload }) => ({
       ...state,
-      list: payload
+      lists: {
+        isFetching: false,
+        data: payload
+      }
     }),
     [POST_TODO_DONE]: (state: Object, { payload }) => ({
       ...state,
@@ -70,8 +81,10 @@ const sagas = function*() {
 
 export function* getTodosList() {
   try {
-    const res = TodosService.getTodoList();
-    yield put(actions.getTodosListDone(res));
+    const response = yield call(TodosService.getTodoList)
+    if (response) {
+      yield put(actions.getTodosListDone(response))
+    }
   } catch (err) {
     // TODO: Error handling.
   }

@@ -1,23 +1,73 @@
 import React from "react";
 import { connect } from "react-redux";
-
-import Page from "../components/page";
+import ButtonComponent from "../components/common/atoms/Button";
+import { Dispatch, Store } from "redux";
+import { Task } from "redux-saga";
+import modules from "../modules";
 
 interface ContextType {
   ctx: {
+    store: SagaType & Store<any>;
     isServer: boolean;
   };
 }
 
-class Other extends React.Component {
+interface SagaType {
+  dispatch: Dispatch;
+  runSagaTask?: () => void;
+  sagaTask?: Task;
+}
+
+interface TodoType {
+  id: number;
+  item: string;
+}
+
+interface PropsType {
+  todos: {
+    list: Array<TodoType>;
+  };
+}
+
+class Other extends React.Component<PropsType, {}> {
   static async getInitialProps(props: ContextType) {
-    const { isServer } = props.ctx;
+    const { store, isServer } = props.ctx;
+
+    // The following code is useful in case of null check for stored todos' list every time.
+    // if (!store.getState().todos.list) {
+    //   store.dispatch(modules.action.getTodosList());
+    // }
+
+    store.dispatch(modules.action.getTodosList());
     return { isServer };
   }
 
   render() {
-    return <Page title='Other Page' linkTo='/' NavigateTo='Index Page' />;
+    const { lists } = this.props.todos;
+    return (
+      <div>
+        <ButtonComponent value='Information' onChange={() => {}} />
+        <input value={"Dummy"} onChange={() => {}} />
+        <ButtonComponent value='Add' onChange={() => {}} />
+        <ButtonComponent value='Show List' onChange={() => {}} />
+        <ul>{!lists.isFetching && lists.data.map(({ item }, index: number) => <li key={`item_${index}`}>{item}</li>)}</ul>
+      </div>
+    );
   }
 }
 
-export default connect()(Other);
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  getTodosList: () => dispatch(modules.action.getTodosList())
+});
+
+const mapStateToProps = (state: any) => {
+  return {
+  todos: {
+    lists: state.todos.lists
+  }
+}};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Other);
