@@ -1,36 +1,12 @@
 import React from "react";
 import { connect } from "react-redux";
 import ButtonComponent from "../components/common/atoms/Button";
-import { Dispatch, Store } from "redux";
-import { Task } from "redux-saga";
+import { Dispatch } from "redux";
 import modules from "../modules";
+import { CtxType, OtherProps } from "../interfaces/pages"
 
-interface ContextType {
-  ctx: {
-    store: SagaType & Store<any>;
-    isServer: boolean;
-  };
-}
-
-interface SagaType {
-  dispatch: Dispatch;
-  runSagaTask?: () => void;
-  sagaTask?: Task;
-}
-
-interface TodoType {
-  id: number;
-  item: string;
-}
-
-interface PropsType {
-  todos: {
-    list: Array<TodoType>;
-  };
-}
-
-class Other extends React.Component<PropsType, {}> {
-  static async getInitialProps(props: ContextType) {
+class Other extends React.Component<OtherProps, {}> {
+  static async getInitialProps(props: CtxType) {
     const { store, isServer } = props.ctx;
 
     // The following code is useful in case of null check for stored todos' list every time.

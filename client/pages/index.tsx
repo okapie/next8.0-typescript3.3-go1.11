@@ -1,24 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Dispatch, Store } from "redux";
-import { Task } from "redux-saga";
 import Page from "../components/page";
-
-interface ContextType {
-  ctx: {
-    store: SagaType & Store<any>;
-    isServer: boolean;
-  };
-}
-
-interface SagaType {
-  dispatch: Dispatch;
-  runSagaTask?: () => void;
-  sagaTask?: Task;
-}
+import { CtxType } from "../interfaces/pages";
 
 class Index extends React.Component {
-  static async getInitialProps(props: ContextType) {
+  static async getInitialProps(props: CtxType) {
     const { isServer } = props.ctx;
     return { isServer };
   }

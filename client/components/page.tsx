@@ -1,12 +1,6 @@
 import Link from "next/link"
 import { connect } from "react-redux"
-
-interface PageProps {
-  linkTo: string;
-  NavigateTo: string;
-  title: string;
-  error?: string;
-}
+import { PageProps } from "../interfaces/components"
 
 function Page (props: PageProps) {
   return (

@@ -2,31 +2,11 @@ import {
   applyMiddleware,
   createStore,
   compose,
-  Dispatch,
-  MiddlewareAPI,
   Store
 } from "redux";
-import createSagaMiddleware, { SagaMiddleware, Task } from "redux-saga";
+import createSagaMiddleware, { SagaMiddleware } from "redux-saga";
 import modules from "../modules";
-
-interface StateType extends Dispatch {
-  type: string;
-  payload: string | number | Array<any> | Object;
-  middleware: Array<SagaMiddleware<{}>[]>;
-}
-
-interface SagaType {
-  dispatch: Dispatch;
-  runSagaTask?: () => void;
-  sagaTask?: Task;
-}
-
-interface ExtendedMiddleware {
-  <S extends StateType>(api: MiddlewareAPI<S>): (
-    next: Dispatch<S>
-  ) => Dispatch<S>;
-  [Symbol.iterator](): IterableIterator<any>;
-}
+import { SagaType, ExtendedMiddleware } from "../interfaces/store";
 
 const bindMiddleware = (
   middleware: ExtendedMiddleware | SagaMiddleware<{}>[]

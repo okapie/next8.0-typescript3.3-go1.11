@@ -41,23 +41,23 @@ const reducers = handleActions(
    * reducerMap.
    */
   {
-    [GET_TODOS_LIST]: (state: Object, { payload }) => ({
+    [GET_TODOS_LIST as string]: () => ({
       lists: {
         isFetching: true
       }
     }),
-    [GET_TODOS_LIST_DONE]: (state: Object, { payload }) => ({
+    [GET_TODOS_LIST_DONE as string]: (state: Object, { payload }) => ({
       ...state,
       lists: {
         isFetching: false,
         data: payload
       }
     }),
-    [POST_TODO_DONE]: (state: Object, { payload }) => ({
+    [POST_TODO_DONE as string]: (state: Object, { payload }) => ({
       ...state,
       postResult: payload
     }),
-    [DELETE_TODO_DONE]: (state: Object, { payload }) => ({
+    [DELETE_TODO_DONE as string]: (state: Object, { payload }) => ({
       ...state,
       deleteResult: payload
     })
