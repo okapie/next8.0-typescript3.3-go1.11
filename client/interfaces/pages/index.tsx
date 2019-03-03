@@ -37,8 +37,8 @@ interface TodoType {
   data: Array<ItemType>;
 }
 
-export interface OtherProps {
+export interface ListProps {
   todos: {
-    lists: TodoType;
+    list: TodoType;
   };
 }

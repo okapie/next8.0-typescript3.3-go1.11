@@ -10,7 +10,7 @@ class Index extends React.Component {
   }
 
   render() {
-    return <Page title='Other Page' linkTo='/other' NavigateTo='Index Page' />;
+    return <Page title='Top Page' linkTo='/list' NavigateTo='Todo List Page' />;
   }
 }
 

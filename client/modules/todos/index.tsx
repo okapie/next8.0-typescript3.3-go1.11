@@ -7,7 +7,7 @@ import TodosService from "../../services/todos";
  * Default State.
  */
 const defaultState = {
-  lists: {
+  list: {
     isFetching: false,
     data: null
   },
@@ -42,13 +42,13 @@ const reducers = handleActions(
    */
   {
     [GET_TODOS_LIST as string]: () => ({
-      lists: {
+      list: {
         isFetching: true
       }
     }),
     [GET_TODOS_LIST_DONE as string]: (state: Object, { payload }) => ({
       ...state,
-      lists: {
+      list: {
         isFetching: false,
         data: payload
       }

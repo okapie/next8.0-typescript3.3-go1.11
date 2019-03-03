@@ -3,9 +3,9 @@ import { connect } from "react-redux";
 import ButtonComponent from "../components/common/atoms/Button";
 import { Dispatch } from "redux";
 import modules from "../modules";
-import { CtxType, OtherProps } from "../interfaces/pages"
+import { CtxType, ListProps } from "../interfaces/pages"
 
-class Other extends React.Component<OtherProps, {}> {
+class List extends React.Component<ListProps, {}> {
   static async getInitialProps(props: CtxType) {
     const { store, isServer } = props.ctx;
 
@@ -19,14 +19,14 @@ class Other extends React.Component<OtherProps, {}> {
   }
 
   render() {
-    const { lists } = this.props.todos;
+    const { list } = this.props.todos;
     return (
       <div>
         <ButtonComponent value='Information' onChange={() => {}} />
         <input value={"Dummy"} onChange={() => {}} />
         <ButtonComponent value='Add' onChange={() => {}} />
         <ButtonComponent value='Show List' onChange={() => {}} />
-        <ul>{!lists.isFetching && lists.data.map(({ item }, index: number) => <li key={`item_${index}`}>{item}</li>)}</ul>
+        <ul>{!list.isFetching && list.data.map(({ item }, index: number) => <li key={`item_${index}`}>{item}</li>)}</ul>
       </div>
     );
   }
@@ -39,11 +39,11 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 const mapStateToProps = (state: any) => {
   return {
   todos: {
-    lists: state.todos.lists
+    list: state.todos.list
   }
 }};
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Other);
+)(List);
