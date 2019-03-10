@@ -90,14 +90,16 @@ export function* getTodosList() {
   }
 }
 
-export const postTodo = (inputText: string) => {
-  return async (dispatch: Dispatch) => {
-    const response = await TodosService.postTodo(inputText);
-    if (response.length > 0) {
-      dispatch(actions.postTodoDone(true));
+export function* postTodo(parameters: { payload: string, type: string }) {
+  try {
+    const response = yield call(TodosService.postTodo(parameters.payload))
+    if (response) {
+      yield put(actions.postTodoDone(response))
     }
-  };
-};
+  } catch (err) {
+    // TODO: Error handling.
+  }
+}
 
 export const deleteTodo = (id: string) => {
   return async (dispatch: Dispatch) => {

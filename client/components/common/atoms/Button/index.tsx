@@ -6,7 +6,7 @@ const SFCComponent = (props: ButtonProps) => (
     <input
       type="button"
       value={props.value}
-      onChange={props.onChange}
+      onClick={props.onClick}
     />
   </div>
 )

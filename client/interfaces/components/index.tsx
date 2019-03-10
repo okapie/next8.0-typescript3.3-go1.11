@@ -6,7 +6,7 @@ export interface InputProps {
 
 export interface ButtonProps {
   value: string;
-  onChange: (event: React.FormEvent<HTMLInputElement>) => void;
+  onClick: (event: React.FormEvent<HTMLInputElement>) => void;
 }
 
 export interface ItemFormProps {

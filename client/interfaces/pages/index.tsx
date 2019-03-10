@@ -41,4 +41,5 @@ export interface ListProps {
   todos: {
     list: TodoType;
   };
+  postTodo: (text: string) => void;
 }
