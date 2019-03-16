@@ -1,4 +1,3 @@
-import { Dispatch } from "redux";
 import { createAction, handleActions } from "redux-actions";
 import { all, takeLatest, put, call } from "redux-saga/effects";
 import TodosService from "../../services/todos";
@@ -101,13 +100,15 @@ export function* postTodo(parameters: { payload: string, type: string }) {
   }
 }
 
-export const deleteTodo = (id: string) => {
-  return async (dispatch: Dispatch) => {
-    const response = await TodosService.deleteTodo(id);
-    if (response.length > 0) {
-      dispatch(actions.deleteTodoDone(true));
+export function* deleteTodo(parameters: { payload: number, type: string }) {
+  try {
+    const response = yield call(TodosService.deleteTodo(parameters.payload));
+    if (response) {
+      yield put(actions.postTodoDone(response))
     }
-  };
-};
+  } catch (err) {
+    // TODO: Error handling.
+  }
+}
 
 export default { reducers, actions, sagas };

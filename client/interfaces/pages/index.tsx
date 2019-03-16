@@ -42,4 +42,5 @@ export interface ListProps {
     list: TodoType;
   };
   postTodo: (text: string) => void;
+  deleteTodo: (id: number) => void;
 }

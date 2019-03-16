@@ -5,11 +5,13 @@ import { Dispatch } from "redux";
 import modules from "../modules";
 import { CtxType, ListProps } from "../interfaces/pages"
 
-const List = ({ todos, postTodo }: ListProps) => {
+const List = ({ todos, postTodo, deleteTodo }: ListProps) => {
   const { list } = todos;
   const [ inputText, setInputText ] = useState("");
 
   const handlerAddTodo = () => postTodo(inputText);
+
+  const handlerDeleteItem = (id: number) => deleteTodo(id);
 
   return (
     <div>
@@ -17,7 +19,13 @@ const List = ({ todos, postTodo }: ListProps) => {
         setInputText(e.target.value)
       }} />
       <ButtonComponent value='Add' onClick={() => handlerAddTodo()} />
-      <ul>{!list.isFetching && list.data.map(({ item }, index: number) => <li key={`item_${index}`}>{item}</li>)}</ul>
+      <ul>
+        {!list.isFetching && list.data.map(({ id, item }, index: number) =>
+          <li key={`item_${index}`}>
+            {item}<ButtonComponent value='Delete' onClick={() => handlerDeleteItem(id)} />
+          </li>
+        )}
+      </ul>
     </div>
   );
 }
@@ -39,7 +47,8 @@ List.getInitialProps = async (props: CtxType) => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   getTodosList: () => dispatch(modules.action.getTodosList()),
-  postTodo: (text: string) => dispatch(modules.action.postTodo(text))
+  postTodo: (text: string) => dispatch(modules.action.postTodo(text)),
+  deleteTodo: (id: number) => dispatch(modules.action.deleteTodo(id))
 });
 
 const mapStateToProps = (state: any) => {
