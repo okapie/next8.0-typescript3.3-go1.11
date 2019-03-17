@@ -91,7 +91,7 @@ export function* getTodosList() {
 
 export function* postTodo(parameters: { payload: string, type: string }) {
   try {
-    const response = yield call(TodosService.postTodo(parameters.payload))
+    const response = yield call(TodosService.postTodo, parameters.payload)
     if (response) {
       yield put(actions.postTodoDone(response))
     }
@@ -102,9 +102,9 @@ export function* postTodo(parameters: { payload: string, type: string }) {
 
 export function* deleteTodo(parameters: { payload: number, type: string }) {
   try {
-    const response = yield call(TodosService.deleteTodo(parameters.payload));
+    const response = yield call(TodosService.deleteTodo, parameters.payload);
     if (response) {
-      yield put(actions.postTodoDone(response))
+      yield put(actions.deleteTodoDone(response))
     }
   } catch (err) {
     // TODO: Error handling.
