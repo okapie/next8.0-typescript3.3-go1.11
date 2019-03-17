@@ -17,6 +17,11 @@ type Todo struct {
     Item    string `json:"item"`
 }
 
+type ResultType struct {
+    Status  int    `json:"status"`
+    Result  bool   `json:"result"`
+}
+
 type Todos []Todo
 
 func openDB() (db *sql.DB) {
@@ -68,8 +73,11 @@ func postTodo(w http.ResponseWriter, r *http.Request) {
     record.Exec(item)
     log.Println("INSERT Item: " + item)
 
+    resultType := ResultType{http.StatusOK, true}
+    res, err := json.Marshal(resultType)
+    w.Write(res)
+
     defer db.Close()
-    http.Redirect(w, r, "/", 200)
 }
 
 func deleteTodo(w http.ResponseWriter, r *http.Request) {
@@ -81,8 +89,12 @@ func deleteTodo(w http.ResponseWriter, r *http.Request) {
     }
     record.Exec(item)
     log.Println("DELETE Item: " + item)
+
+    resultType := ResultType{http.StatusOK, true}
+    res, err := json.Marshal(resultType)
+    w.Write(res)
+
     defer db.Close()
-    http.Redirect(w, r, "/", 200)
 }
 
 func main() {
