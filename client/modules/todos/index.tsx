@@ -80,9 +80,9 @@ const sagas = function*() {
 
 export function* getTodosList() {
   try {
-    const response = yield call(TodosService.getTodoList)
+    const response = yield call(TodosService.getTodoList);
     if (response) {
-      yield put(actions.getTodosListDone(response))
+      yield put(actions.getTodosListDone(response));
     }
   } catch (err) {
     // TODO: Error handling.
@@ -91,9 +91,13 @@ export function* getTodosList() {
 
 export function* postTodo(parameters: { payload: string, type: string }) {
   try {
-    const response = yield call(TodosService.postTodo, parameters.payload)
-    if (response) {
-      yield put(actions.postTodoDone(response))
+    const postResult = yield call(TodosService.postTodo, parameters.payload);
+    if (postResult) {
+      yield put(actions.postTodoDone(postResult));
+    }
+    const getResult = yield call(TodosService.getTodoList);
+    if (getResult) {
+      yield put(actions.getTodosListDone(getResult));
     }
   } catch (err) {
     // TODO: Error handling.
@@ -102,9 +106,13 @@ export function* postTodo(parameters: { payload: string, type: string }) {
 
 export function* deleteTodo(parameters: { payload: number, type: string }) {
   try {
-    const response = yield call(TodosService.deleteTodo, parameters.payload);
-    if (response) {
-      yield put(actions.deleteTodoDone(response))
+    const deleteResult = yield call(TodosService.deleteTodo, parameters.payload);
+    if (deleteResult) {
+      yield put(actions.deleteTodoDone(deleteResult));
+    }
+    const getResult = yield call(TodosService.getTodoList);
+    if (getResult) {
+      yield put(actions.getTodosListDone(getResult));
     }
   } catch (err) {
     // TODO: Error handling.
