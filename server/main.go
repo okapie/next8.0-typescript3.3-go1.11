@@ -9,7 +9,9 @@ import (
 
     "github.com/gorilla/mux"
     "github.com/gorilla/handlers"
+    "github.com/jinzhu/gorm"
     _ "github.com/go-sql-driver/mysql"
+    _ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
 type Todo struct {
@@ -30,6 +32,18 @@ func openDB() (db *sql.DB) {
     dbPassword := "password"
     dbName := "db_todos"
     db, err := sql.Open(dbDriver, dbUser+":"+dbPassword+"@/"+dbName)
+    if err != nil {
+        panic(err.Error())
+    }
+    return db
+}
+
+func gormConnect() *gorm.DB {
+    dbDriver := "mysql"
+    dbUser := "root"
+    dbPassword := "password"
+    dbName := "db_todos"
+    db, err := gorm.Open(dbDriver, dbUser+":"+dbPassword+"@/"+dbName)
     if err != nil {
         panic(err.Error())
     }
