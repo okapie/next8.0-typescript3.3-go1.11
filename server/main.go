@@ -14,7 +14,7 @@ import (
     _ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
-type Todo struct {
+type Tb_Todo struct {
     Id      int    `json:"id"`
     Item    string `json:"item"`
 }
@@ -24,7 +24,7 @@ type ResultType struct {
     Result  bool   `json:"result"`
 }
 
-type Todos []Todo
+type Tb_Todos []Tb_Todo
 
 func openDB() (db *sql.DB) {
     dbDriver := "mysql"
@@ -51,24 +51,14 @@ func gormConnect() *gorm.DB {
 }
 
 func getTodoList(w http.ResponseWriter, r *http.Request) {
-    db := openDB()
-    records, err := db.Query("SELECT * FROM Tb_Todos ORDER BY id DESC")
-    if err != nil {
-        panic(err.Error())
-    }
-    var todos []Todo
-    for records.Next() {
-
-        var id int
-        var item string
-
-        records.Scan(&id ,&item)
-        todos = append(todos, Todo{ id, item })
-    }
-    todosBytes, _ := json.Marshal(&todos)
-
-    w.Write(todosBytes)
+    db := gormConnect()
     defer db.Close()
+
+    todos := []Tb_Todo{}
+    db.Find(&todos)
+
+    bytes, _ := json.Marshal(&todos)
+    w.Write(bytes)
 }
 
 func postTodo(w http.ResponseWriter, r *http.Request) {
