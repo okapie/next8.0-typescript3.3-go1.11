@@ -63,25 +63,22 @@ func getTodoList(w http.ResponseWriter, r *http.Request) {
 
 func postTodo(w http.ResponseWriter, r *http.Request) {
     defer r.Body.Close()
-    body, err := ioutil.ReadAll(r.Body)
-    if err != nil {
-        log.Fatal(err)
-    }
 
-    db := openDB()
-    item := string(body)
-    record, err := db.Prepare("INSERT INTO Tb_Todos(item) VALUES(?)")
+    db := gormConnect()
+    defer db.Close()
+
+    body, err := ioutil.ReadAll(r.Body)
     if err != nil {
         panic(err.Error())
     }
-    record.Exec(item)
+    item := string(body)
+
+    db.Create(&Tb_Todo{Item: item})
     log.Println("INSERT Item: " + item)
 
     resultType := ResultType{http.StatusOK, true}
-    res, err := json.Marshal(resultType)
+    res, _ := json.Marshal(resultType)
     w.Write(res)
-
-    defer db.Close()
 }
 
 func deleteTodo(w http.ResponseWriter, r *http.Request) {
