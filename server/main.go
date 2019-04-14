@@ -82,20 +82,20 @@ func postTodo(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteTodo(w http.ResponseWriter, r *http.Request) {
-    db := openDB()
+    db := gormConnect()
     item := r.URL.Query().Get("id")
-    record, err := db.Prepare("DELETE FROM Tb_Todos WHERE id=?")
-    if err != nil {
-        panic(err.Error())
-    }
-    record.Exec(item)
-    log.Println("DELETE Item: " + item)
+
+    var tb_todo Tb_Todo
+    db.First(&tb_todo, item)
+    db.Delete(&tb_todo)
+
+    var tb_todos []Tb_Todo
+    db.Find(&tb_todos)
+    json.NewEncoder(w).Encode(&tb_todos)
 
     resultType := ResultType{http.StatusOK, true}
-    res, err := json.Marshal(resultType)
+    res, _ := json.Marshal(resultType)
     w.Write(res)
-
-    defer db.Close()
 }
 
 func main() {
