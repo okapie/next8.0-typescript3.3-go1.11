@@ -92,7 +92,7 @@ export function* getTodosList() {
 export function* postTodo(parameters: { payload: string, type: string }) {
   try {
     const postResult = yield call(TodosService.postTodo, parameters.payload);
-    if (postResult.result) {
+    if (postResult.status === 200) {
       yield put(actions.postTodoDone(postResult));
       const getResult = yield call(TodosService.getTodoList);
       if (getResult) {

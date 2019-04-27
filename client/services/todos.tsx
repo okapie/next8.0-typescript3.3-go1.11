@@ -11,7 +11,7 @@ export default class TodosService {
   static async postTodo(parameter: string): Promise<Object> {
     return await client()
       .post(`/todo`, { item: parameter })
-      .then(response => response.data)
+      .then(response => response)
       .catch(error => error.response.data);
   }
 

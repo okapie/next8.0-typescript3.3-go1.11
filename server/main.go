@@ -5,7 +5,6 @@ import (
     "log"
     "net/http"
     "database/sql"
-    "io/ioutil"
 
     "github.com/gorilla/mux"
     "github.com/gorilla/handlers"
@@ -17,6 +16,12 @@ import (
 type Tb_Todo struct {
     Id      int    `json:"id"`
     Item    string `json:"item"`
+}
+
+type PostResult struct {
+    Status  int    `json:"status"`
+    Result  bool   `json:"result"`
+    Data    *gorm.DB `json:"data"`
 }
 
 type ResultType struct {
@@ -67,18 +72,15 @@ func postTodo(w http.ResponseWriter, r *http.Request) {
     db := gormConnect()
     defer db.Close()
 
-    body, err := ioutil.ReadAll(r.Body)
-    if err != nil {
-        panic(err.Error())
-    }
-    item := string(body)
+    var tb_todo Tb_Todo
+    json.NewDecoder(r.Body).Decode(&tb_todo)
+    newTodo := db.Create(&tb_todo)
+    json.NewEncoder(w).Encode(&tb_todo)
 
-    db.Create(&Tb_Todo{Item: item})
-    log.Println("INSERT Item: " + item)
+    result := PostResult{http.StatusOK, true, newTodo}
+    json.Marshal(result)
 
-    resultType := ResultType{http.StatusOK, true}
-    res, _ := json.Marshal(resultType)
-    w.Write(res)
+    w.Header().Set("Content-Type", "application/json")
 }
 
 func deleteTodo(w http.ResponseWriter, r *http.Request) {
