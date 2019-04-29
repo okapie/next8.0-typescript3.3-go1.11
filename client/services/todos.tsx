@@ -18,7 +18,7 @@ export default class TodosService {
   static async deleteTodo(parameter: number): Promise<Object> {
     return await client()
       .delete(`/todo?id=${parameter}`)
-      .then(response => response.data)
+      .then(response => response)
       .catch(error => error.response.data);
   }
 }

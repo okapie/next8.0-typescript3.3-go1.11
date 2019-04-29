@@ -107,7 +107,7 @@ export function* postTodo(parameters: { payload: string, type: string }) {
 export function* deleteTodo(parameters: { payload: number, type: string }) {
   try {
     const deleteResult = yield call(TodosService.deleteTodo, parameters.payload);
-    if (deleteResult.result) {
+    if (deleteResult.status === 200) {
       yield put(actions.deleteTodoDone(deleteResult));
       const getResult = yield call(TodosService.getTodoList);
       if (getResult) {

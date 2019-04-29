@@ -24,7 +24,7 @@ type PostResult struct {
     Data    *gorm.DB `json:"data"`
 }
 
-type ResultType struct {
+type DeleteResult struct {
     Status  int    `json:"status"`
     Result  bool   `json:"result"`
 }
@@ -95,9 +95,10 @@ func deleteTodo(w http.ResponseWriter, r *http.Request) {
     db.Find(&tb_todos)
     json.NewEncoder(w).Encode(&tb_todos)
 
-    resultType := ResultType{http.StatusOK, true}
-    res, _ := json.Marshal(resultType)
-    w.Write(res)
+    result := DeleteResult{http.StatusOK, true}
+    json.Marshal(result)
+
+    w.Header().Set("Content-Type", "application/json")
 }
 
 func main() {
