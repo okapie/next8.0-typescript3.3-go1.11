@@ -4,7 +4,6 @@ import (
     "encoding/json"
     "log"
     "net/http"
-    "database/sql"
 
     "github.com/gorilla/mux"
     "github.com/gorilla/handlers"
@@ -30,18 +29,6 @@ type DeleteResult struct {
 }
 
 type Tb_Todos []Tb_Todo
-
-func openDB() (db *sql.DB) {
-    dbDriver := "mysql"
-    dbUser := "root"
-    dbPassword := "password"
-    dbName := "db_todos"
-    db, err := sql.Open(dbDriver, dbUser+":"+dbPassword+"@/"+dbName)
-    if err != nil {
-        panic(err.Error())
-    }
-    return db
-}
 
 func gormConnect() *gorm.DB {
     dbDriver := "mysql"
