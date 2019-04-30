@@ -5,11 +5,13 @@ import (
     "log"
     "net/http"
 
-    "github.com/gorilla/mux"
-    "github.com/gorilla/handlers"
-    "github.com/jinzhu/gorm"
     _ "github.com/go-sql-driver/mysql"
+    "github.com/gorilla/handlers"
+    "github.com/gorilla/mux"
+    "github.com/jinzhu/gorm"
     _ "github.com/jinzhu/gorm/dialects/mysql"
+
+    "github.com/okapie/next8.0-typescript3.3-go1.11/server/db"
 )
 
 type Tb_Todo struct {
@@ -28,26 +30,12 @@ type DeleteResult struct {
     Result  bool   `json:"result"`
 }
 
-type Tb_Todos []Tb_Todo
-
-func gormConnect() *gorm.DB {
-    dbDriver := "mysql"
-    dbUser := "root"
-    dbPassword := "password"
-    dbName := "db_todos"
-    db, err := gorm.Open(dbDriver, dbUser+":"+dbPassword+"@/"+dbName)
-    if err != nil {
-        panic(err.Error())
-    }
-    return db
-}
-
 func getTodoList(w http.ResponseWriter, r *http.Request) {
-    db := gormConnect()
-    defer db.Close()
+    gormDb := db.Open()
+    defer gormDb.Close()
 
     todos := []Tb_Todo{}
-    db.Find(&todos)
+    gormDb.Find(&todos)
 
     bytes, _ := json.Marshal(&todos)
     w.Write(bytes)
@@ -56,12 +44,12 @@ func getTodoList(w http.ResponseWriter, r *http.Request) {
 func postTodo(w http.ResponseWriter, r *http.Request) {
     defer r.Body.Close()
 
-    db := gormConnect()
-    defer db.Close()
+    gormDb := db.Open()
+    defer gormDb.Close()
 
     var tb_todo Tb_Todo
     json.NewDecoder(r.Body).Decode(&tb_todo)
-    newTodo := db.Create(&tb_todo)
+    newTodo := gormDb.Create(&tb_todo)
     json.NewEncoder(w).Encode(&tb_todo)
 
     result := PostResult{http.StatusOK, true, newTodo}
@@ -71,15 +59,15 @@ func postTodo(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteTodo(w http.ResponseWriter, r *http.Request) {
-    db := gormConnect()
+    gormDb := db.Open()
     item := r.URL.Query().Get("id")
 
     var tb_todo Tb_Todo
-    db.First(&tb_todo, item)
-    db.Delete(&tb_todo)
+    gormDb.First(&tb_todo, item)
+    gormDb.Delete(&tb_todo)
 
     var tb_todos []Tb_Todo
-    db.Find(&tb_todos)
+    gormDb.Find(&tb_todos)
     json.NewEncoder(w).Encode(&tb_todos)
 
     result := DeleteResult{http.StatusOK, true}
