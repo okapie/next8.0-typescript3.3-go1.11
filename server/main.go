@@ -1,16 +1,9 @@
 package main
 
 import (
-    "encoding/json"
-    "log"
-    "net/http"
-
     _ "github.com/go-sql-driver/mysql"
-    "github.com/gorilla/handlers"
-    "github.com/gorilla/mux"
-    "github.com/jinzhu/gorm"
-    _ "github.com/jinzhu/gorm/dialects/mysql"
-
+    "github.com/gin-gonic/gin"
+    "github.com/gin-contrib/cors"
     "github.com/okapie/next8.0-typescript3.3-go1.11/server/db"
 )
 
@@ -19,72 +12,52 @@ type Tb_Todo struct {
     Item    string `json:"item"`
 }
 
-type PostResult struct {
-    Status  int    `json:"status"`
-    Result  bool   `json:"result"`
-    Data    *gorm.DB `json:"data"`
-}
-
-type DeleteResult struct {
-    Status  int    `json:"status"`
-    Result  bool   `json:"result"`
-}
-
-func getTodoList(w http.ResponseWriter, r *http.Request) {
+func getTodoList (c *gin.Context) {
     gormDb := db.Open()
     defer gormDb.Close()
 
     todos := []Tb_Todo{}
     gormDb.Find(&todos)
 
-    bytes, _ := json.Marshal(&todos)
-    w.Write(bytes)
+    c.JSON(200, &todos)
 }
 
-func postTodo(w http.ResponseWriter, r *http.Request) {
-    defer r.Body.Close()
-
+func postTodo (c *gin.Context) {
     gormDb := db.Open()
     defer gormDb.Close()
 
     var tb_todo Tb_Todo
-    json.NewDecoder(r.Body).Decode(&tb_todo)
-    newTodo := gormDb.Create(&tb_todo)
-    json.NewEncoder(w).Encode(&tb_todo)
+    c.BindJSON(&tb_todo)
+    gormDb.Create(&tb_todo)
 
-    result := PostResult{http.StatusOK, true, newTodo}
-    json.Marshal(result)
-
-    w.Header().Set("Content-Type", "application/json")
+    c.JSON(200, &tb_todo)
 }
 
-func deleteTodo(w http.ResponseWriter, r *http.Request) {
+func deleteTodo (c *gin.Context) {
     gormDb := db.Open()
-    item := r.URL.Query().Get("id")
+    defer gormDb.Close()
+
+    q := c.Request.URL.Query()
+    item := q["id"]
 
     var tb_todo Tb_Todo
     gormDb.First(&tb_todo, item)
     gormDb.Delete(&tb_todo)
 
-    var tb_todos []Tb_Todo
-    gormDb.Find(&tb_todos)
-    json.NewEncoder(w).Encode(&tb_todos)
-
-    result := DeleteResult{http.StatusOK, true}
-    json.Marshal(result)
-
-    w.Header().Set("Content-Type", "application/json")
+    c.JSON(200, &tb_todo)
 }
 
 func main() {
-    allowedOrigins := handlers.AllowedOrigins([]string{"http://localhost:3000"})
-    allowedMethods := handlers.AllowedMethods([]string{"GET", "POST", "DELETE", "PUT"})
-    allowedHeaders := handlers.AllowedHeaders([]string{"Authorization"})
+    r := gin.Default()
+    r.Use(cors.New(cors.Config{
+        AllowOrigins:     []string{"*"},
+        AllowMethods:     []string{"GET", "POST", "DELETE"},
+        AllowHeaders:     []string{"Origin"},
+        AllowCredentials: true,
+    }))
+    r.GET("/api/v1/todos", getTodoList)
+    r.POST("/api/v1/todo", postTodo)
+    r.DELETE("/api/v1/todo", deleteTodo)
 
-    r := mux.NewRouter()
-    r.HandleFunc("/api/v1/todos", getTodoList).Methods("GET")
-    r.HandleFunc("/api/v1/todo", postTodo).Methods("POST")
-    r.HandleFunc("/api/v1/todo", deleteTodo).Methods("DELETE")
-
-    log.Fatal(http.ListenAndServe(":8000", handlers.CORS(allowedOrigins, allowedMethods, allowedHeaders)(r)))
+    r.Run("localhost:8000")
 }
