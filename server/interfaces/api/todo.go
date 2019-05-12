@@ -1,42 +1,50 @@
 package api
 
 import (
+	"strconv"
 	"github.com/gin-gonic/gin"
-	"github.com/okapie/next8.0-typescript3.3-go1.11/server/infrastructure/db"
 	"github.com/okapie/next8.0-typescript3.3-go1.11/server/entities"
+	"github.com/okapie/next8.0-typescript3.3-go1.11/server/usecases"
 )
 
 func GetTodoList (c *gin.Context) {
-	gormDb := db.Open()
-	defer gormDb.Close()
-
 	todos := []entities.Tb_Todo{}
-	gormDb.Find(&todos)
+	err := usecases.GetTodoList(&todos)
 
-	c.JSON(200, &todos)
+	size := len(todos)
+
+	if size == 0 {
+		c.JSON(404, gin.H{"message": "Record not found"})
+	}
+
+	if err == nil && size > 0 {
+		c.JSON(200, &todos)
+	}
 }
 
 func PostTodo (c *gin.Context) {
-	gormDb := db.Open()
-	defer gormDb.Close()
-
 	var tb_todo entities.Tb_Todo
 	c.BindJSON(&tb_todo)
-	gormDb.Create(&tb_todo)
 
-	c.JSON(200, &tb_todo)
+	err := usecases.PostTodo(&tb_todo)
+
+	if err == nil {
+		c.JSON(200, &tb_todo)
+	}
 }
 
 func DeleteTodo (c *gin.Context) {
-	gormDb := db.Open()
-	defer gormDb.Close()
-
-	q := c.Request.URL.Query()
-	item := q["id"]
-
 	var tb_todo entities.Tb_Todo
-	gormDb.First(&tb_todo, item)
-	gormDb.Delete(&tb_todo)
+	id := c.Params.ByName("id")
+	err := usecases.DeleteTodo(&tb_todo, id)
 
-	c.JSON(200, &tb_todo)
+	todoId, _ := strconv.Atoi(id)
+
+	if todoId == 0 {
+		c.JSON(400, gin.H{"message": "Invalid id"})
+	}
+
+	if err == nil {
+		c.JSON(200, &tb_todo)
+	}
 }
